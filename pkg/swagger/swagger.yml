@@ -1,0 +1,174 @@
+openapi: 3.0.2
+info:
+  contact:
+    email: DL-T-Magic.Hugo@telekom.de
+    name: Team Hugo
+  description: A microservice to manage presales order confirmations
+  title: Order Confirmation Service
+  version: 0.9.0
+servers:
+  - url: /
+paths:
+  /v1/greeting:
+    post:
+      description: provide a greeting
+      operationId: v1greeting
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GreetingRequest'
+        description: parameters for an order confirmation
+        required: false
+      responses:
+        "200":
+          #description: success
+          $ref: '#/components/responses/Success'
+        "400":
+          $ref: '#/components/responses/ProblemDetails'
+      tags:
+        - greeting
+components:
+  responses:
+    GreetingResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Greeting'
+      description: ""
+    GreetingsResponse:
+      content:
+        application/json:
+          schema:
+            type: "array"
+            items:
+              $ref: '#/components/schemas/Greeting'
+      description: ""
+    ProblemDetails:
+      description: |
+        Problem Details based upon the RFC 7807 format.
+        See https://gard.telekom.de/gardwiki/display/DGHB/Problem+Message
+        and https://tools.ietf.org/html/rfc7807#page-5 for more details.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    Success:
+      description: |
+        Problem Details based upon the RFC 7807 format.
+        See https://gard.telekom.de/gardwiki/display/DGHB/Problem+Message
+        and https://tools.ietf.org/html/rfc7807#page-5 for more details.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Success'
+  schemas:
+    ProblemDetails:
+      type: object
+      title: Problem Details
+      description: |
+        Problem Details based upon the RFC 7807 format.
+        See https://gard.telekom.de/gardwiki/display/DGHB/Problem+Message
+        and https://tools.ietf.org/html/rfc7807#page-5 for more details.
+      properties:
+        type:
+          type: string
+          format: uri
+          description: |
+            A URI reference [RFC3986] that identifies the problem type.
+          example: https://api.telekom.de/presales-order/order-confirmation-management/error/40000
+        code:
+          type: integer
+          description: Non-RFC7807 property but mandatory for Gigabit, contains for a specific case the defined error-codes. see definition in response section with x-error-codes
+          example: 40000
+        title:
+          type: string
+          description: |
+            A short, human-readable summary of the problem type. Consumers
+            SHOULD NOT automatically dereference the type URI.
+          example: Bad Request
+        status:
+          type: integer
+          description: HTTP status code ([RFC7231], Section 6).
+          example: 400
+        detail:
+          type: string
+          description: |
+            A human-readable explanation specific to this occurrence of the problem.
+            The "detail" member, if present, ought to focus on helping
+            the client correct the problem, rather than giving debugging information.
+          example: "Key: 'OrderConfirmationRequest.OrderID' Error:Field validation for 'OrderID' failed on the 'fullPresalesOrderID' tag"
+      required:
+        - type
+        - title
+        - code
+    Success:
+      type: object
+      title: Success
+      description: |
+        success case
+      properties:
+        type:
+          type: string
+          format: uri
+          description: |
+            A URI reference [RFC3986] that identifies the problem type.
+          example: /v1/success
+        code:
+          type: integer
+          description: Non-RFC7807 property but mandatory for Gigabit, contains for a specific case the defined error-codes. see definition in response section with x-error-codes
+          example: 40000
+        title:
+          type: string
+          description: |
+            A short, human-readable summary of the problem type. Consumers
+            SHOULD NOT automatically dereference the type URI.
+          example: Bad Request
+        status:
+          type: integer
+          description: HTTP status code ([RFC7231], Section 6).
+          example: 400
+        detail:
+          type: string
+          description: |
+            A human-readable explanation specific to this occurrence of the problem.
+            The "detail" member, if present, ought to focus on helping
+            the client correct the problem, rather than giving debugging information.
+          example: "Key: 'OrderConfirmationRequest.OrderID' Error:Field validation for 'OrderID' failed on the 'fullPresalesOrderID' tag"
+      required:
+        - type
+        - title
+        - code
+    Greeting:
+      properties:
+        salutation:
+          description: Anrede
+          example: Herr
+          type: string
+        firstName:
+          description: FirstName of the customer only needed for private customers
+          type: string
+        lastName:
+          description: LastName of the customer only needed for private customers
+          type: string
+      type: object
+    GreetingRequest:
+      properties:
+        salutation:
+          description: deutsche Anrede für eine Begrüßnug
+          type: string
+          example: Frau
+          enum:
+            - Frau
+            - Herr
+        firstName:
+          description: FirstName of the customer only needed for private customers
+          type: string
+          example: Jenny
+        lastName:
+          description: LastName of the customer only needed for private customers
+          type: string
+          example: Mustermann
+      required:
+        - lastName
+      type: object
