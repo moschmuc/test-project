@@ -1,0 +1,4 @@
+package: dtos
+generate:
+  models: true
+output: dtos.gen.go
