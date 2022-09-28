@@ -9,6 +9,13 @@ const (
 	Herr GreetingRequestSalutation = "Herr"
 )
 
+// Problem Details based upon the RFC 7807 format.
+// See https://gard.telekom.de/gardwiki/display/DGHB/Problem+Message
+// and https://tools.ietf.org/html/rfc7807#page-5 for more details.
+type ErrorMessage struct {
+	Error string `json:"error"`
+}
+
 // GreetingRequest defines model for GreetingRequest.
 type GreetingRequest struct {
 	// FirstName of the customer only needed for private customers
@@ -24,48 +31,9 @@ type GreetingRequest struct {
 // deutsche Anrede für eine Begrüßnug
 type GreetingRequestSalutation string
 
-// Problem Details based upon the RFC 7807 format.
-// See https://gard.telekom.de/gardwiki/display/DGHB/Problem+Message
-// and https://tools.ietf.org/html/rfc7807#page-5 for more details.
-type ProblemDetails struct {
-	// Non-RFC7807 property but mandatory for Gigabit, contains for a specific case the defined error-codes. see definition in response section with x-error-codes
-	Code int `json:"code"`
-
-	// A human-readable explanation specific to this occurrence of the problem.
-	// The "detail" member, if present, ought to focus on helping
-	// the client correct the problem, rather than giving debugging information.
-	Detail *string `json:"detail,omitempty"`
-
-	// HTTP status code ([RFC7231], Section 6).
-	Status *int `json:"status,omitempty"`
-
-	// A short, human-readable summary of the problem type. Consumers
-	// SHOULD NOT automatically dereference the type URI.
-	Title string `json:"title"`
-
-	// A URI reference [RFC3986] that identifies the problem type.
-	Type string `json:"type"`
-}
-
 // success case
 type Success struct {
-	// Non-RFC7807 property but mandatory for Gigabit, contains for a specific case the defined error-codes. see definition in response section with x-error-codes
-	Code int `json:"code"`
-
-	// A human-readable explanation specific to this occurrence of the problem.
-	// The "detail" member, if present, ought to focus on helping
-	// the client correct the problem, rather than giving debugging information.
-	Detail *string `json:"detail,omitempty"`
-
-	// HTTP status code ([RFC7231], Section 6).
-	Status *int `json:"status,omitempty"`
-
-	// A short, human-readable summary of the problem type. Consumers
-	// SHOULD NOT automatically dereference the type URI.
-	Title string `json:"title"`
-
-	// A URI reference [RFC3986] that identifies the problem type.
-	Type string `json:"type"`
+	Success string `json:"success"`
 }
 
 // V1greetingJSONBody defines parameters for V1greeting.
