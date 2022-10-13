@@ -32,7 +32,7 @@ type GreetingRequest struct {
 type GreetingRequestSalutation string
 
 // success case
-type Success struct {
+type SuccessMessage struct {
 	Success string `json:"success"`
 }
 

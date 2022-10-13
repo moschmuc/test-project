@@ -38,18 +38,14 @@ components:
       description: ""
     ProblemDetails:
       description: |
-        Problem Details based upon the RFC 7807 format.
-        See https://gard.telekom.de/gardwiki/display/DGHB/Problem+Message
-        and https://tools.ietf.org/html/rfc7807#page-5 for more details.
+        Problem Details
       content:
         application/problem+json:
           schema:
             $ref: '#/components/schemas/ErrorMessage'
     Success:
       description: |
-        Problem Details based upon the RFC 7807 format.
-        See https://gard.telekom.de/gardwiki/display/DGHB/Problem+Message
-        and https://tools.ietf.org/html/rfc7807#page-5 for more details.
+        Success Details
       content:
         application/problem+json:
           schema:
@@ -59,9 +55,7 @@ components:
       type: object
       title: Error Message
       description: |
-        Problem Details based upon the RFC 7807 format.
-        See https://gard.telekom.de/gardwiki/display/DGHB/Problem+Message
-        and https://tools.ietf.org/html/rfc7807#page-5 for more details.
+        Problem Details
       properties:
         error:
           type: string
@@ -74,11 +68,11 @@ components:
       description: |
         success case
       properties:
-        greeting:
+        success:
           type: string
           example: "Hello Jenny Musterfrau"
       required:
-        - greeting
+        - success
     Greeting:
       properties:
         salutation:
