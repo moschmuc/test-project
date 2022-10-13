@@ -14,7 +14,7 @@ func write(writer http.ResponseWriter, message string) {
 
 func main() {
 	http.HandleFunc("/v1/greeting", helloGreetingHandler)
-	http.HandleFunc("/goodbye", goodbyeHandler)
+	//http.HandleFunc("/goodbye", goodbyeHandler)
 	err := http.ListenAndServe("localhost:8080", nil)
 	log.Fatal(err)
 }

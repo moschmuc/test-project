@@ -9,11 +9,14 @@ const (
 	Herr GreetingRequestSalutation = "Herr"
 )
 
-// Problem Details based upon the RFC 7807 format.
-// See https://gard.telekom.de/gardwiki/display/DGHB/Problem+Message
-// and https://tools.ietf.org/html/rfc7807#page-5 for more details.
+// Problem Details
 type ErrorMessage struct {
 	Error string `json:"error"`
+}
+
+// success case
+type GreetingMessage struct {
+	Message string `json:"message"`
 }
 
 // GreetingRequest defines model for GreetingRequest.
@@ -31,10 +34,8 @@ type GreetingRequest struct {
 // deutsche Anrede für eine Begrüßnug
 type GreetingRequestSalutation string
 
-// success case
-type SuccessMessage struct {
-	Success string `json:"success"`
-}
+// Problem Details
+type ProblemDetails = ErrorMessage
 
 // V1greetingJSONBody defines parameters for V1greeting.
 type V1greetingJSONBody = GreetingRequest

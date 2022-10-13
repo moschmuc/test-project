@@ -23,33 +23,27 @@ paths:
       responses:
         "200":
           #description: success
-          $ref: '#/components/responses/Success'
+          $ref: '#/components/responses/GreetingResponse'
         "400":
           $ref: '#/components/responses/ProblemDetails'
       tags:
         - greeting
 components:
   responses:
-    GreetingResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Greeting'
-      description: ""
     ProblemDetails:
       description: |
         Problem Details
       content:
-        application/problem+json:
+        application/json:
           schema:
             $ref: '#/components/schemas/ErrorMessage'
-    Success:
+    GreetingResponse:
       description: |
         Success Details
       content:
         application/problem+json:
           schema:
-            $ref: '#/components/schemas/SuccessMessage'
+            $ref: '#/components/schemas/GreetingMessage'
   schemas:
     ErrorMessage:
       type: object
@@ -62,30 +56,17 @@ components:
           example: ""
       required:
         - error
-    SuccessMessage:
+    GreetingMessage:
       type: object
-      title: Success Message
+      title: Greeting Message
       description: |
         success case
       properties:
-        success:
+        message:
           type: string
           example: "Hello Jenny Musterfrau"
       required:
-        - success
-    Greeting:
-      properties:
-        salutation:
-          description: Anrede
-          example: Herr
-          type: string
-        firstName:
-          description: FirstName of the customer only needed for private customers
-          type: string
-        lastName:
-          description: LastName of the customer only needed for private customers
-          type: string
-      type: object
+        - message
     GreetingRequest:
       properties:
         salutation:
