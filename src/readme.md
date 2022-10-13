@@ -3,7 +3,7 @@
 //- [ ] yaml fertig machen
 //- [ ] error/success messages
 //- [ ] controller.go schreiben, interface für POST anlegen
-//- [ ] Service webresponder fuer go(net/http?) suchen und injecten -> Martin fragen
+//- [ ] Service webresponder fuer go(net/http?) (GIN) suchen und injecten -> Martin fragen
 //- [ ] SuccessMessage fehlt in dtos?
 //- [ ] 1 function in interface: auf controllerschicht
 //- [ ] prüft request
