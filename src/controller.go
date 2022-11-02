@@ -8,11 +8,13 @@ import (
 	"github.com/moschmuc/test-project/src/dtos"
 )
 
+//var em dtos.ErrorMessage
+
 func helloGreetingHandler(w http.ResponseWriter, r *http.Request) {
 	//write(w, "Hello Jenny!")
 	var gr dtos.GreetingRequest
 	err := json.NewDecoder(r.Body).Decode(&gr)
-	fmt.Print(gr.LastName)
+	fmt.Println(*gr.Salutation, *gr.FirstName, gr.LastName)
 	if err != nil {
 		http.Error(w, err.Error(), 400)
 		return

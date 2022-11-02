@@ -34,6 +34,9 @@ type GreetingRequest struct {
 // deutsche Anrede für eine Begrüßnug
 type GreetingRequestSalutation string
 
+// success case
+type GreetingResponse = GreetingMessage
+
 // Problem Details
 type ProblemDetails = ErrorMessage
 
