@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 
 	"github.com/moschmuc/test-project/src/dtos"
 )
@@ -22,9 +23,14 @@ func GreetingRequestHandler(w http.ResponseWriter, err error, gr dtos.GreetingRe
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
+	return isValid(w, gr)
+}
+
+func isValid(w http.ResponseWriter, gr dtos.GreetingRequest, Errs url.Values) int {
 	var responseCode int
 	if (*gr.Salutation == "" || *gr.Salutation == "Divers") && (*gr.FirstName == "" || gr.LastName == "") {
 		responseCode = badMove(w, responseCode)
+		Errs.Add("salutation", "the salutation ist required")
 	} else if (*gr.FirstName == "" && *gr.Salutation == "") || (*gr.FirstName == "" && gr.LastName == "") {
 		responseCode = badMove(w, responseCode)
 	} else if *gr.FirstName != "" && gr.LastName == "" {
@@ -49,7 +55,7 @@ func goodMove(w http.ResponseWriter, responseCode int) int {
 
 func badMove(w http.ResponseWriter, responseCode int) int {
 	responseCode = http.StatusBadRequest
-	ErrorMessage := dtos.ErrorMessage{Error: "not the best move"}
+	ErrorMessage := dtos.ErrorMessage{Error: "Please enter at least your last name and your first name or your salutation"}
 	w.WriteHeader(responseCode)
 	fmt.Println(ErrorMessage)
 	return responseCode

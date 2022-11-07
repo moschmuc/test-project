@@ -54,6 +54,15 @@ components:
         error:
           type: string
           example: ""
+        firstName:
+          type: string
+          example: "Jenny"
+        lastName:
+          type: string
+          example: "Schmuck"
+        salutation:
+          type: string
+          example: "Frau"
       required:
         - error
     SuccessMessage:

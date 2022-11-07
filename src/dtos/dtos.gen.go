@@ -12,7 +12,10 @@ const (
 
 // Problem Details
 type ErrorMessage struct {
-	Error string `json:"error"`
+	Error      string  `json:"error"`
+	FirstName  *string `json:"firstName,omitempty"`
+	LastName   *string `json:"lastName,omitempty"`
+	Salutation *string `json:"salutation,omitempty"`
 }
 
 // GreetingRequest defines model for GreetingRequest.
