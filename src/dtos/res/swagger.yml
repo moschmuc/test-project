@@ -43,7 +43,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/GreetingMessage'
+            $ref: '#/components/schemas/SuccessMessage'
   schemas:
     ErrorMessage:
       type: object
@@ -56,11 +56,11 @@ components:
           example: ""
       required:
         - error
-    GreetingMessage:
+    SuccessMessage:
       type: object
-      title: Greeting Message
+      title: Success Message
       description: |
-        success case
+        success message
       properties:
         message:
           type: string
@@ -76,6 +76,7 @@ components:
           enum:
             - Frau
             - Herr
+            - Divers
         firstName:
           description: FirstName of the customer only needed for private customers
           type: string

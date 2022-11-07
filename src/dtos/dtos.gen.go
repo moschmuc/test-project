@@ -5,18 +5,14 @@ package dtos
 
 // Defines values for GreetingRequestSalutation.
 const (
-	Frau GreetingRequestSalutation = "Frau"
-	Herr GreetingRequestSalutation = "Herr"
+	Divers GreetingRequestSalutation = "Divers"
+	Frau   GreetingRequestSalutation = "Frau"
+	Herr   GreetingRequestSalutation = "Herr"
 )
 
 // Problem Details
 type ErrorMessage struct {
 	Error string `json:"error"`
-}
-
-// success case
-type GreetingMessage struct {
-	Message string `json:"message"`
 }
 
 // GreetingRequest defines model for GreetingRequest.
@@ -34,8 +30,13 @@ type GreetingRequest struct {
 // deutsche Anrede für eine Begrüßnug
 type GreetingRequestSalutation string
 
-// success case
-type GreetingResponse = GreetingMessage
+// success message
+type SuccessMessage struct {
+	Message string `json:"message"`
+}
+
+// success message
+type GreetingResponse = SuccessMessage
 
 // Problem Details
 type ProblemDetails = ErrorMessage
