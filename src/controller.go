@@ -10,12 +10,34 @@ import (
 
 //var em dtos.ErrorMessage
 
-func GreetingRequestHandler(w http.ResponseWriter, r *http.Request, err error) {
+func GreetingRequestHandler(w http.ResponseWriter, r *http.Request) {
 	var gr dtos.GreetingRequest
-	err = json.NewDecoder(r.Body).Decode(&gr)
+
+	err := json.NewDecoder(r.Body).Decode(&gr)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
+
+	err = validateRequest(gr)
+	if err != nil {
+		//responseCode := http.StatusBadRequest
+		//http.Response{}
+		w.WriteHeader(http.StatusBadRequest)
+		//fmt.Printf(err.Error())
+		w.Header().Set("Content-Type", "application/json")
+
+		err = json.NewEncoder(w).Encode(
+			dtos.ErrorMessage{
+				Error: err.Error(),
+			},
+		)
+		if err != nil {
+			panic("marshalling error response failed, something is really wrong here")
+		}
+
+		return
+	}
+	// handle success message here
 }
 
 func handleRequestValidation(w http.ResponseWriter, responseCode int, err error) { //int return value und return responsecode?
@@ -56,12 +78,11 @@ func returnStatusOK(w http.ResponseWriter, responseCode int) int {
 
 func validateRequest(gr dtos.GreetingRequest) error {
 	if (*gr.Salutation == "" || *gr.Salutation == "Divers") && (*gr.FirstName == "" || gr.LastName == "") {
-		fmt.Errorf("Error: %s, %s or %s are missing", *gr.Salutation, *gr.FirstName, gr.LastName)
+		return fmt.Errorf("Error: %s, %s or %s are missing", *gr.Salutation, *gr.FirstName, gr.LastName) // MKr - you must return the error after creation
 	} else if (*gr.FirstName == "" && *gr.Salutation == "") || (*gr.FirstName == "" && gr.LastName == "") {
-		fmt.Errorf("testfehler2: %s", gr.Salutation)
+		return fmt.Errorf("testfehler2: %s", gr.Salutation)
 	} else if *gr.FirstName != "" && gr.LastName == "" {
-		fmt.Errorf("testfehler2: %s", gr.Salutation)
-
+		return fmt.Errorf("testfehler2: %s", gr.Salutation)
 	}
 	return nil
 }
