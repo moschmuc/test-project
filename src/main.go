@@ -13,7 +13,7 @@ func write(writer http.ResponseWriter, message string) {
 }
 
 func main() {
-	http.HandleFunc("/v1/greeting", helloGreetingHandler)
+	http.HandleFunc("/v1/greeting", GreetingRequestHandler)
 	//http.HandleFunc("/goodbye", goodbyeHandler)
 	err := http.ListenAndServe("localhost:8080", nil)
 	log.Fatal(err)
