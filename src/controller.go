@@ -8,6 +8,9 @@ import (
 	"github.com/moschmuc/test-project/src/dtos"
 )
 
+//ToDo: - können wir die Success Cases in die "validateRequest" func mit aufnehmen?
+//ToDo: - wie bekommen wir die Success Response in die SuccessMessage?
+
 func GreetingRequestHandler(w http.ResponseWriter, r *http.Request) {
 	var gr dtos.GreetingRequest
 
