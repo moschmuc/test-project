@@ -8,8 +8,6 @@ import (
 	"github.com/moschmuc/test-project/src/dtos"
 )
 
-//var em dtos.ErrorMessage
-
 func GreetingRequestHandler(w http.ResponseWriter, r *http.Request) {
 	var gr dtos.GreetingRequest
 
@@ -19,21 +17,22 @@ func GreetingRequestHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = validateRequest(gr)
+
 	if err == nil {
 		w.WriteHeader(http.StatusOK)
 		w.Header().Set("Content-Type", "application/json")
 
 		err = json.NewEncoder(w).Encode(
 			dtos.SuccessMessage{
-				Message: "test success",
+				Message: "success",
 			},
 		)
 		if *gr.FirstName != "" && gr.LastName != "" {
 			fmt.Println("Hello", *gr.FirstName, gr.LastName)
-			w.WriteHeader(http.StatusOK)
+
 		} else if *gr.Salutation != "" && gr.LastName != "" {
 			fmt.Println("Hello", *gr.Salutation, gr.LastName)
-			w.WriteHeader(http.StatusOK)
+
 		}
 		return
 	}
@@ -50,13 +49,11 @@ func GreetingRequestHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic("marshalling error response failed, something is really wrong here")
 	}
-	//success response
-
 }
 
 func validateRequest(gr dtos.GreetingRequest) error {
-	if (*gr.Salutation == "" || *gr.Salutation == "Divers") && (*gr.FirstName == "" || gr.LastName == "") {
-		err := fmt.Errorf("please enter at least salutation and last name or first name and last name")
+	if (*gr.Salutation == "" || *gr.Salutation == dtos.Divers) && (*gr.FirstName == "" || gr.LastName == "") {
+		err := fmt.Errorf("please enter at least a salutation (Frau/Herr) and a last name or a first name and a last name")
 		fmt.Println(err.Error())
 		return err
 
@@ -70,20 +67,13 @@ func validateRequest(gr dtos.GreetingRequest) error {
 		fmt.Println(err.Error())
 		return err
 
-	} else if true {
+	} else if *gr.Salutation != dtos.Frau && *gr.Salutation != dtos.Herr && *gr.Salutation != dtos.Divers {
 		err := fmt.Errorf("%s is not a valid salutation", *gr.Salutation)
 		fmt.Println(err.Error())
 		return err
 	}
 
 	return nil
-}
-
-//statt responsecode bool und *string zurueckgeben (optional)
-// Validierungsergebnis-response aus gr-handler anstossen, w nicht notwendig hier
-
-func goodbyeHandler(w http.ResponseWriter, r *http.Request) {
-	write(w, "Goodbye World!")
 }
 
 //func (*Controller) unmarshal(r *web.Request, value any) error {
