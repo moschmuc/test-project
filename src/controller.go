@@ -10,59 +10,72 @@ import (
 
 //var em dtos.ErrorMessage
 
-func GreetingRequestHandler(w http.ResponseWriter, r *http.Request, err error) {
+func GreetingRequestHandler(w http.ResponseWriter, r *http.Request) {
 	var gr dtos.GreetingRequest
-	err = json.NewDecoder(r.Body).Decode(&gr)
+
+	err := json.NewDecoder(r.Body).Decode(&gr)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
-}
 
-func handleRequestValidation(w http.ResponseWriter, responseCode int, err error) { //int return value und return responsecode?
-	var gr dtos.GreetingRequest
 	err = validateRequest(gr)
+	if err == nil {
+		w.WriteHeader(http.StatusOK)
+		w.Header().Set("Content-Type", "application/json")
+
+		err = json.NewEncoder(w).Encode(
+			dtos.SuccessMessage{
+				Message: "test success",
+			},
+		)
+		if *gr.FirstName != "" && gr.LastName != "" {
+			fmt.Println("Hello", *gr.FirstName, gr.LastName)
+			w.WriteHeader(http.StatusOK)
+		} else if *gr.Salutation != "" && gr.LastName != "" {
+			fmt.Println("Hello", *gr.Salutation, gr.LastName)
+			w.WriteHeader(http.StatusOK)
+		}
+		return
+	}
 	if err != nil {
-		responseCode = http.StatusBadRequest
-		w.WriteHeader(responseCode)
-		fmt.Printf(err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		w.Header().Set("Content-Type", "application/json")
 
+		err = json.NewEncoder(w).Encode(
+			dtos.ErrorMessage{
+				Error: err.Error(),
+			},
+		)
 	}
-	// successhandling, also goodmove
-
-	if *gr.FirstName != "" && gr.LastName != "" {
-		fmt.Println("Hello", *gr.FirstName, gr.LastName)
-		returnStatusOK(w, responseCode)
-
-	} else if *gr.Salutation != "" && gr.LastName != "" {
-		fmt.Println("Hello", *gr.Salutation, gr.LastName)
-		returnStatusOK(w, responseCode)
+	if err != nil {
+		panic("marshalling error response failed, something is really wrong here")
 	}
-}
-func returnStatusOK(w http.ResponseWriter, responseCode int) int {
-	responseCode = http.StatusOK
-	//successMessage := dtos.SuccessMessage{Message: "looks good dude"}
-	w.WriteHeader(responseCode)
-	//fmt.Println(successMessage)
-	return responseCode
-}
+	//success response
 
-/* func badMove(w http.ResponseWriter, responseCode int) int {
-    responseCode = http.StatusBadRequest
-    //ErrorMessage := dtos.ErrorMessage{Error: "Please enter at least your last name and your first name or your salutation"}
-    w.WriteHeader(responseCode)
-    fmt.Println(ErrorMessage)
-    return responseCode
-} */
+}
 
 func validateRequest(gr dtos.GreetingRequest) error {
 	if (*gr.Salutation == "" || *gr.Salutation == "Divers") && (*gr.FirstName == "" || gr.LastName == "") {
-		fmt.Errorf("Error: %s, %s or %s are missing", *gr.Salutation, *gr.FirstName, gr.LastName)
-	} else if (*gr.FirstName == "" && *gr.Salutation == "") || (*gr.FirstName == "" && gr.LastName == "") {
-		fmt.Errorf("testfehler2: %s", gr.Salutation)
-	} else if *gr.FirstName != "" && gr.LastName == "" {
-		fmt.Errorf("testfehler2: %s", gr.Salutation)
+		err := fmt.Errorf("please enter at least salutation and last name or first name and last name")
+		fmt.Println(err.Error())
+		return err
 
+	} else if *gr.FirstName == "" && gr.LastName == "" {
+		err := fmt.Errorf("first and last name are missing")
+		fmt.Println(err.Error())
+		return err
+
+	} else if *gr.FirstName != "" && gr.LastName == "" {
+		err := fmt.Errorf("last name is missing")
+		fmt.Println(err.Error())
+		return err
+
+	} else if true {
+		err := fmt.Errorf("%s is not a valid salutation", *gr.Salutation)
+		fmt.Println(err.Error())
+		return err
 	}
+
 	return nil
 }
 
