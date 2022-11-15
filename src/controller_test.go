@@ -16,7 +16,7 @@ func Test_validateRequest(t *testing.T) {
 		testCases []testCase
 	)
 	tests := testCases{
-		{
+		{ //if 1, Z. 64
 			name: "NOK:first name salutation",
 			gr: dtos.GreetingRequest{
 				FirstName:  stringToNilableString("Momme"),
@@ -26,7 +26,43 @@ func Test_validateRequest(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "NOK:",
+			name: "OK:last name salutation",
+			gr: dtos.GreetingRequest{
+				FirstName:  stringToNilableString(""),
+				LastName:   "Behrens",
+				Salutation: stringToNilableGreetingRequestSalutation("Herr"),
+			},
+			wantErr: false,
+		},
+		{
+			name: "NOK: first name",
+			gr: dtos.GreetingRequest{
+				FirstName:  stringToNilableString("Peter"),
+				LastName:   "",
+				Salutation: stringToNilableGreetingRequestSalutation(""),
+			},
+			wantErr: true,
+		},
+		{
+			name: "NOK: salutation Divers first name",
+			gr: dtos.GreetingRequest{
+				FirstName:  stringToNilableString("Michael"),
+				LastName:   "",
+				Salutation: stringToNilableGreetingRequestSalutation("Divers"),
+			},
+			wantErr: true,
+		},
+		{
+			name: "NOK: salutation Divers last name",
+			gr: dtos.GreetingRequest{
+				FirstName:  stringToNilableString(""),
+				LastName:   "Mueller",
+				Salutation: stringToNilableGreetingRequestSalutation("Divers"),
+			},
+			wantErr: true,
+		}, // else if 2, Z. 67
+		{
+			name: "NOK: all empty",
 			gr: dtos.GreetingRequest{
 				FirstName:  stringToNilableString(""),
 				LastName:   "",
@@ -35,11 +71,29 @@ func Test_validateRequest(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "NOK:",
+			name: "OK: first name last name",
+			gr: dtos.GreetingRequest{
+				FirstName:  stringToNilableString("Jenny"),
+				LastName:   "Wurst",
+				Salutation: stringToNilableGreetingRequestSalutation(""),
+			},
+			wantErr: false,
+		},
+		{
+			name: "NOK: last name",
+			gr: dtos.GreetingRequest{
+				FirstName:  stringToNilableString(""),
+				LastName:   "Wurst",
+				Salutation: stringToNilableGreetingRequestSalutation(""),
+			},
+			wantErr: true,
+		},
+		{
+			name: "NOK: wrong salutation",
 			gr: dtos.GreetingRequest{
 				FirstName:  stringToNilableString(""),
 				LastName:   "",
-				Salutation: stringToNilableGreetingRequestSalutation(""),
+				Salutation: stringToNilableGreetingRequestSalutation("Falsche Begruessung"),
 			},
 			wantErr: true,
 		},
