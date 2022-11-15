@@ -16,8 +16,8 @@ func GreetingRequestHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
-	err = errorCases(gr)
-	w.Header().Set("Content-Type", "application/json") //ToDo: move to beginning of the func(done)
+	err = checkErrors(gr)
+	w.Header().Set("Content-Type", "application/json")
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -34,20 +34,20 @@ func GreetingRequestHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	//ToDo: implement func Sprintf (done)
 	//ToDo: set variable var bla string (done)
-	//ToDo: export if cases (See func errorCases)
+	//ToDo: export if cases (See func checkErrors)
 
 	w.WriteHeader(http.StatusOK)
-	greetingString := successCases(gr)
+	greetingString := checkSuccess(gr)
 
 	err = json.NewEncoder(w).Encode(
 		dtos.SuccessMessage{
-			Message: greetingString, //ToDo: implement variable)(done)
+			Message: greetingString,
 		},
 	)
 	return
 }
 
-func successCases(gr dtos.GreetingRequest) string {
+func checkSuccess(gr dtos.GreetingRequest) string {
 	var greetingString string
 
 	if *gr.FirstName != "" && gr.LastName != "" {
@@ -60,7 +60,7 @@ func successCases(gr dtos.GreetingRequest) string {
 }
 
 // ToDo: Start here with unit tests
-func errorCases(gr dtos.GreetingRequest) error {
+func checkErrors(gr dtos.GreetingRequest) error {
 	if (*gr.Salutation == "" || *gr.Salutation == dtos.Divers) && (*gr.FirstName == "" || gr.LastName == "") {
 		err := errors.New("please enter at least a salutation (Frau/Herr) and a last name or a first name and a last name")
 		return err
