@@ -61,16 +61,17 @@ func createGreeting(gr dtos.GreetingRequest) string {
 
 // ToDo: Start here with unit tests
 func validateRequest(gr dtos.GreetingRequest) error {
+	//ToDo: NIL Pointer prüfen (firstName)
 	if (*gr.Salutation == "" || *gr.Salutation == dtos.Divers) && (*gr.FirstName == "" || gr.LastName == "") {
 		return errors.New("please enter at least a salutation (Frau/Herr) and a last name or a first name and a last name")
 
-	} else if *gr.FirstName == "" && gr.LastName == "" {
+	} else if gr.FirstName != nil && *gr.FirstName == "" && gr.LastName == "" {
 		return errors.New("first and last name are missing")
 
-	} else if *gr.FirstName != "" && gr.LastName == "" {
+	} else if gr.FirstName != nil && *gr.FirstName != "" && gr.LastName == "" {
 		return errors.New("last name is missing")
 
-	} else if *gr.Salutation != dtos.Frau && *gr.Salutation != dtos.Herr && *gr.Salutation != dtos.Divers && *gr.Salutation != "" {
+	} else if gr.Salutation != nil && *gr.Salutation != dtos.Frau && *gr.Salutation != dtos.Herr && *gr.Salutation != dtos.Divers && *gr.Salutation != "" {
 		return fmt.Errorf("%s is not a valid salutation", *gr.Salutation)
 	}
 	return nil
