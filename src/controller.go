@@ -16,7 +16,7 @@ func GreetingRequestHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
-	err = checkErrors(gr)
+	err = validateRequest(gr)
 	w.Header().Set("Content-Type", "application/json")
 
 	if err != nil {
@@ -34,10 +34,10 @@ func GreetingRequestHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	//ToDo: implement func Sprintf (done)
 	//ToDo: set variable var bla string (done)
-	//ToDo: export if cases (See func checkErrors)
+	//ToDo: export if cases (See func validateRequest)
 
 	w.WriteHeader(http.StatusOK)
-	greetingString := checkSuccess(gr)
+	greetingString := createGreeting(gr)
 
 	err = json.NewEncoder(w).Encode(
 		dtos.SuccessMessage{
@@ -47,36 +47,50 @@ func GreetingRequestHandler(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func checkSuccess(gr dtos.GreetingRequest) string {
+func createGreeting(gr dtos.GreetingRequest) string {
 	var greetingString string
 
 	if *gr.FirstName != "" && gr.LastName != "" {
 		greetingString = fmt.Sprintf("Hello %s %s", *gr.FirstName, gr.LastName)
 	} else {
+		//the only case left is salutation and last name
 		greetingString = fmt.Sprintf("Hello %s %s", *gr.Salutation, gr.LastName)
-		// *gr.Salutation != "" && gr.LastName != "" {
 	}
 	return greetingString
 }
 
 // ToDo: Start here with unit tests
-func checkErrors(gr dtos.GreetingRequest) error {
+func validateRequest(gr dtos.GreetingRequest) error {
 	if (*gr.Salutation == "" || *gr.Salutation == dtos.Divers) && (*gr.FirstName == "" || gr.LastName == "") {
-		err := errors.New("please enter at least a salutation (Frau/Herr) and a last name or a first name and a last name")
-		return err
+		return errors.New("please enter at least a salutation (Frau/Herr) and a last name or a first name and a last name")
 
 	} else if *gr.FirstName == "" && gr.LastName == "" {
-		err := errors.New("first and last name are missing")
-		return err
+		return errors.New("first and last name are missing")
 
 	} else if *gr.FirstName != "" && gr.LastName == "" {
-		err := errors.New("last name is missing")
-		return err
+		return errors.New("last name is missing")
 
 	} else if *gr.Salutation != dtos.Frau && *gr.Salutation != dtos.Herr && *gr.Salutation != dtos.Divers && *gr.Salutation != "" {
-		err := fmt.Errorf("%s is not a valid salutation", *gr.Salutation)
-		return err
+		return fmt.Errorf("%s is not a valid salutation", *gr.Salutation)
+	}
+	return nil
+}
+
+func stringToNilableString(value string) *string {
+	var defaultValue string
+	if value == defaultValue {
+		return nil
 	}
 
-	return nil
+	result := string(value)
+	return &result
+}
+func stringToNilableGreetingRequestSalutation(value string) *dtos.GreetingRequestSalutation {
+	var defaultValue string
+	if value == defaultValue {
+		return nil
+	}
+
+	result := dtos.GreetingRequestSalutation(value)
+	return &result
 }
