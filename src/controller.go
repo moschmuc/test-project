@@ -2,14 +2,12 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 
 	"github.com/moschmuc/test-project/src/dtos"
 )
-
-//ToDo: - können wir die Success Cases in die "validateRequest" func mit aufnehmen?
-//ToDo: - wie bekommen wir die Success Response in die SuccessMessage?
 
 func GreetingRequestHandler(w http.ResponseWriter, r *http.Request) {
 	var gr dtos.GreetingRequest
@@ -18,79 +16,67 @@ func GreetingRequestHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
+	err = errorCases(gr)
+	w.Header().Set("Content-Type", "application/json") //ToDo: move to beginning of the func(done)
 
-	err = validateRequest(gr)
-
-	if err == nil {
-		w.WriteHeader(http.StatusOK)
-		w.Header().Set("Content-Type", "application/json")
-
-		err = json.NewEncoder(w).Encode(
-			dtos.SuccessMessage{
-				Message: "success",
-			},
-		)
-		if *gr.FirstName != "" && gr.LastName != "" {
-			fmt.Println("Hello", *gr.FirstName, gr.LastName)
-
-		} else if *gr.Salutation != "" && gr.LastName != "" {
-			fmt.Println("Hello", *gr.Salutation, gr.LastName)
-
-		}
-		return
-	}
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		w.Header().Set("Content-Type", "application/json")
 
 		err = json.NewEncoder(w).Encode(
 			dtos.ErrorMessage{
 				Error: err.Error(),
 			},
 		)
+		if err != nil {
+			panic("marshalling error response failed, something is really wrong here")
+		}
+		return
 	}
-	if err != nil {
-		panic("marshalling error response failed, something is really wrong here")
-	}
+	//ToDo: implement func Sprintf (done)
+	//ToDo: set variable var bla string (done)
+	//ToDo: export if cases (See func errorCases)
+
+	w.WriteHeader(http.StatusOK)
+	greetingString := successCases(gr)
+
+	err = json.NewEncoder(w).Encode(
+		dtos.SuccessMessage{
+			Message: greetingString, //ToDo: implement variable)(done)
+		},
+	)
+	return
 }
 
-func validateRequest(gr dtos.GreetingRequest) error {
+func successCases(gr dtos.GreetingRequest) string {
+	var greetingString string
+
+	if *gr.FirstName != "" && gr.LastName != "" {
+		greetingString = fmt.Sprintf("Hello %s %s", *gr.FirstName, gr.LastName)
+	} else {
+		greetingString = fmt.Sprintf("Hello %s %s", *gr.Salutation, gr.LastName)
+		// *gr.Salutation != "" && gr.LastName != "" {
+	}
+	return greetingString
+}
+
+// ToDo: Start here with unit tests
+func errorCases(gr dtos.GreetingRequest) error {
 	if (*gr.Salutation == "" || *gr.Salutation == dtos.Divers) && (*gr.FirstName == "" || gr.LastName == "") {
-		err := fmt.Errorf("please enter at least a salutation (Frau/Herr) and a last name or a first name and a last name")
-		fmt.Println(err.Error())
+		err := errors.New("please enter at least a salutation (Frau/Herr) and a last name or a first name and a last name")
 		return err
 
 	} else if *gr.FirstName == "" && gr.LastName == "" {
-		err := fmt.Errorf("first and last name are missing")
-		fmt.Println(err.Error())
+		err := errors.New("first and last name are missing")
 		return err
 
 	} else if *gr.FirstName != "" && gr.LastName == "" {
-		err := fmt.Errorf("last name is missing")
-		fmt.Println(err.Error())
+		err := errors.New("last name is missing")
 		return err
 
-	} else if *gr.Salutation != dtos.Frau && *gr.Salutation != dtos.Herr && *gr.Salutation != dtos.Divers {
+	} else if *gr.Salutation != dtos.Frau && *gr.Salutation != dtos.Herr && *gr.Salutation != dtos.Divers && *gr.Salutation != "" {
 		err := fmt.Errorf("%s is not a valid salutation", *gr.Salutation)
-		fmt.Println(err.Error())
 		return err
 	}
 
 	return nil
 }
-
-//func (*Controller) unmarshal(r *web.Request, value any) error {
-//  if r.Request() == nil {
-//      return errMissingHTTPRequest
-//  }
-//
-//  if r.Request().Body == nil || r.Request().Body == http.NoBody {
-//      return errEmptyBody
-//  }
-//
-//  err := json.NewDecoder(r.Request().Body).Decode(&Greeting)
-//  if err != nil {
-//      return fmt.Errorf("request body could not be unmarshalled: %w", err)
-//  }
-//  return nil
-//}
