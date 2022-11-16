@@ -61,8 +61,11 @@ func createGreeting(gr dtos.GreetingRequest) string {
 
 // ToDo: Start here with unit tests
 func validateRequest(gr dtos.GreetingRequest) error {
-	//ToDo: NIL Pointer prüfen (firstName)
+	//ToDo: NIL Pointer prüfen (firstName) - done? check again with Momme
 	if (*gr.Salutation == "" || *gr.Salutation == dtos.Divers) && (*gr.FirstName == "" || gr.LastName == "") {
+		return errors.New("please enter at least a salutation (Frau/Herr) and a last name or a first name and a last name")
+
+	} else if (gr.Salutation != nil && *gr.Salutation == "" || gr.Salutation == dtos.Divers) && (gr.FirstName != nil && *gr.FirstName == "" && gr.LastName == "") //ToDo?
 		return errors.New("please enter at least a salutation (Frau/Herr) and a last name or a first name and a last name")
 
 	} else if gr.FirstName != nil && *gr.FirstName == "" && gr.LastName == "" {
