@@ -1,9 +1,6 @@
 openapi: 3.0.2
 info:
-  contact:
-    email: DL-T-Magic.Hugo@telekom.de
-    name: Team Hugo
-  description: A microservice to manage presales order confirmations
+  description: A microservice to manage greeting requests
   title: Greeting Service
   version: 0.9.0
 servers:
@@ -18,7 +15,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/GreetingRequest'
-        description: parameters for an order confirmation
+        description: parameters for greeting requests
         required: false
       responses:
         "200":
@@ -70,7 +67,7 @@ components:
     GreetingRequest:
       properties:
         salutation:
-          description: deutsche Anrede für eine Begrüßnug
+          description: german salutation for greeting
           type: string
           example: Frau
           enum:
@@ -78,11 +75,11 @@ components:
             - Herr
             - Divers
         firstName:
-          description: FirstName of the customer only needed for private customers
+          description: FirstName of the user
           type: string
           example: Jenny
         lastName:
-          description: LastName of the customer only needed for private customers
+          description: LastName of the user
           type: string
           example: Mustermann
       required:
