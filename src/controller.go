@@ -32,9 +32,6 @@ func GreetingRequestHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	//ToDo: implement func Sprintf (done)
-	//ToDo: set variable var bla string (done)
-	//ToDo: export if cases (See func validateRequest)
 
 	w.WriteHeader(http.StatusOK)
 	greetingString := createGreeting(gr)
@@ -53,37 +50,45 @@ func createGreeting(gr dtos.GreetingRequest) string {
 	if *gr.FirstName != "" && gr.LastName != "" {
 		greetingString = fmt.Sprintf("Hello %s %s", *gr.FirstName, gr.LastName)
 	} else {
-		//the only case left is salutation and last name
 		greetingString = fmt.Sprintf("Hello %s %s", *gr.Salutation, gr.LastName)
 	}
 	return greetingString
 }
 
-// ToDo: Start here with unit tests
 func validateRequest(gr dtos.GreetingRequest) error {
-	//ToDo: NIL Pointer prüfen (firstName)
-	if gr.Salutation != nil && *gr.Salutation == "" || *gr.Salutation == dtos.Divers && *gr.FirstName == "" || gr.LastName == "" {
+	if gr.LastName != "" && isEmpty(gr.FirstName) &&
+		(grIsEmpty(gr.Salutation) || *gr.Salutation == dtos.Divers) {
 		return errors.New("please enter at least a salutation (Frau/Herr) and a last name or a first name and a last name")
 
-	} else if gr.FirstName != nil && *gr.FirstName == "" && gr.LastName == "" {
+	} else if !grIsEmpty(gr.Salutation) && (gr.FirstName != nil && *gr.FirstName == "" && gr.LastName == "") {
 		return errors.New("first and last name are missing")
 
-	} else if gr.FirstName != nil && *gr.FirstName != "" && gr.LastName == "" {
+	} else if !isEmpty(gr.FirstName) && gr.LastName == "" {
 		return errors.New("last name is missing")
 
-	} else if gr.Salutation != nil && *gr.Salutation != dtos.Frau && *gr.Salutation != dtos.Herr && *gr.Salutation != dtos.Divers && *gr.Salutation != "" {
+	} else if !grIsEmpty(gr.Salutation) && *gr.Salutation != dtos.Frau && *gr.Salutation != dtos.Herr && *gr.Salutation != dtos.Divers {
 		return fmt.Errorf("%s is not a valid salutation", *gr.Salutation)
+
+	} else if *gr.FirstName == "" && gr.LastName == "" && *gr.Salutation == "" {
+		return errors.New("none of the attributes are filled")
 	}
 	return nil
 }
 
+func isEmpty[T string | dtos.GreetingRequestSalutation](t *T) bool {
+	return t == nil || *t == ""
+}
+
+func grIsEmpty(s *dtos.GreetingRequestSalutation) bool {
+	return s == nil || *s == ""
+}
 func stringToNilableString(value string) *string {
 	var defaultValue string
 	if value == defaultValue {
 		return nil
 	}
 
-	result := string(value)
+	result := value
 	return &result
 }
 func stringToNilableGreetingRequestSalutation(value string) *dtos.GreetingRequestSalutation {
