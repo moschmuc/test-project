@@ -16,7 +16,7 @@ func Test_validateRequest(t *testing.T) {
 		testCases []testCase
 	)
 	tests := testCases{
-		{ //if 1, Z. 64
+		{
 			name: "NOK:first name salutation",
 			gr: dtos.GreetingRequest{
 				FirstName:  stringToNilableString("Momme"),
@@ -60,11 +60,11 @@ func Test_validateRequest(t *testing.T) {
 				Salutation: stringToNilableGreetingRequestSalutation("Divers"),
 			},
 			wantErr: true,
-		}, // else if 2, Z. 67
+		},
 		{
 			name: "NOK: all empty",
 			gr: dtos.GreetingRequest{
-				FirstName:  stringToNilableString(""),
+				FirstName:  nil,
 				LastName:   "",
 				Salutation: nil,
 			},

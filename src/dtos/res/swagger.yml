@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  description: A microservice to manage greeting requests
+  description: a microservice to manage greeting requests
   title: Greeting Service
   version: 0.9.0
 servers:
@@ -19,7 +19,6 @@ paths:
         required: false
       responses:
         "200":
-          #description: success
           $ref: '#/components/responses/GreetingResponse'
         "400":
           $ref: '#/components/responses/ProblemDetails'
