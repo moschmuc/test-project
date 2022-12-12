@@ -57,20 +57,21 @@ func createGreeting(gr dtos.GreetingRequest) string {
 
 func validateRequest(gr dtos.GreetingRequest) error {
 	if gr.LastName != "" && isEmpty(gr.FirstName) &&
-		(grIsEmpty(gr.Salutation) || *gr.Salutation == dtos.Divers) {
+		(isEmpty(gr.Salutation) || *gr.Salutation == dtos.Divers) {
 		return errors.New("please enter at least a salutation (Frau/Herr) and a last name or a first name and a last name")
 
-	} else if !grIsEmpty(gr.Salutation) && (gr.FirstName != nil && *gr.FirstName == "" && gr.LastName == "") {
+	} else if isEmpty(gr.FirstName) && gr.LastName == "" && isEmpty(gr.Salutation) {
+		return errors.New("none of the attributes are filled")
+
+	} else if isEmpty(gr.FirstName) && gr.LastName == "" {
 		return errors.New("first and last name are missing")
 
 	} else if !isEmpty(gr.FirstName) && gr.LastName == "" {
 		return errors.New("last name is missing")
 
-	} else if !grIsEmpty(gr.Salutation) && *gr.Salutation != dtos.Frau && *gr.Salutation != dtos.Herr && *gr.Salutation != dtos.Divers {
+	} else if !isEmpty(gr.Salutation) && *gr.Salutation != dtos.Frau && *gr.Salutation != dtos.Herr && *gr.Salutation != dtos.Divers {
 		return fmt.Errorf("%s is not a valid salutation", *gr.Salutation)
 
-	} else if *gr.FirstName == "" && gr.LastName == "" && *gr.Salutation == "" {
-		return errors.New("none of the attributes are filled")
 	}
 	return nil
 }
@@ -79,9 +80,6 @@ func isEmpty[T string | dtos.GreetingRequestSalutation](t *T) bool {
 	return t == nil || *t == ""
 }
 
-func grIsEmpty(s *dtos.GreetingRequestSalutation) bool {
-	return s == nil || *s == ""
-}
 func stringToNilableString(value string) *string {
 	var defaultValue string
 	if value == defaultValue {
